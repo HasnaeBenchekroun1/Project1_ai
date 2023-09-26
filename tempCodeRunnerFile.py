@@ -1,0 +1,1 @@
+    problem = EightPuzzleSearchProblem(puzzle)

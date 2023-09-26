@@ -18,6 +18,7 @@ Pacman agents (in searchAgents.py).
 """
 
 import util
+import math
 
 class SearchProblem:
     """
@@ -181,7 +182,7 @@ def uniformCostSearch(problem):
 
     return actions
 
-def nullHeuristic(state, problem=None):
+def h1(state, problem=None):
     """
     A heuristic function estimates the cost from the current state to the nearest
     goal in the provided SearchProblem. This heuristic is h1, which is the number
@@ -197,10 +198,54 @@ def nullHeuristic(state, problem=None):
     #print(f"h1 heuristic value (Number of misplaced tiles): {misplaced_tiles}")
 
     return misplaced_tiles
-    
 
 
-def aStarSearch(problem, heuristic=nullHeuristic):
+def h2(state, problem=None):
+    result = 0
+    state_list =[]
+    for i in range(3):
+        for j in range(3):
+            state_list.append(state.cells[i][j])
+    for i in range(9):
+        if state_list[i]!=0:
+            y = state_list[i]//3 - i//3
+            x = state_list[i]%3 - i%3
+            result += math.sqrt(x**2 + y**2)
+    return result
+
+def h3(state, problem=None):
+    result = 0
+    state_list =[]
+    for i in range(3):
+        for j in range(3):
+            state_list.append(state.cells[i][j])
+    for i in range(9):
+        if state_list[i]!=0:
+            y = abs(state_list[i]//3 - i//3)
+            x = abs(state_list[i]%3 - i%3)
+            result += (x + y)
+    return result
+
+
+def h4(state, problem=None):
+    result = 0
+    state_list =[]
+    for i in range(3):
+        for j in range(3):
+            state_list.append(state.cells[i][j])
+    for i in range(9):
+        if state_list[i]!=0:
+            y = abs(state_list[i]//3 - i//3)
+            if (y != 0):
+                result+=1
+            x = abs(state_list[i]%3 - i%3)
+            if (x != 0):
+                result+=1
+    return result
+
+
+
+def aStarSearch(problem, heuristic=h3):
     """Search the node that has the lowest combined cost and heuristic first."""
 
     #to be explored (FIFO): takes in item, cost+heuristic
@@ -213,6 +258,8 @@ def aStarSearch(problem, heuristic=nullHeuristic):
 
     frontier.push(startNode, 0)
 
+    #adding counter of max frontier
+    depth_tree = 0
     while not frontier.isEmpty():
 
         #begin exploring first (lowest-combined (cost+heuristic) ) node on frontier
@@ -223,7 +270,10 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         exploredNodes.append((currentState, currentCost))
 
         if problem.isGoalState(currentState):
-            return actions
+            print("depth of tree:", depth_tree)
+            print("expanded nodes:", len(exploredNodes))
+            print("max fringe size:", frontier.max_fringe)
+            return actions, (depth_tree, len(exploredNodes), frontier.max_fringe)
 
         else:
             #list of (successor, action, stepCost)
@@ -249,14 +299,18 @@ def aStarSearch(problem, heuristic=nullHeuristic):
                     frontier.push(newNode, newCost + heuristic(succState, problem))
                     exploredNodes.append((succState, newCost))
 
-                print(newCost)
-                print(heuristic(succState, problem))
-                print(newCost+heuristic(succState, problem))
-                print(newAction)
-                print("-------------")
+                #print(newCost)
+                #print(heuristic(succState, problem))
+                #print(newCost+heuristic(succState, problem))
+                #print(newAction)
+                if depth_tree < len(newAction):
+                    depth_tree = len(newAction)
+                #print("-------------")
 
-
-    return actions
+    print("depth of tree:", depth_tree)
+    print("expanded nodes:", len(exploredNodes))
+    print("max fringe size:", frontier.count)
+    return actions, (depth_tree, len(exploredNodes), frontier.max_fringe)
 
 
 # Abbreviations
