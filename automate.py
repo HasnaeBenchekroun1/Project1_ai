@@ -3,7 +3,7 @@ from csv_utils import *
 
 
 
-def one_iteration(state):
+def one_iteration(state, index=0):
 
     puzzle = EightPuzzleState(state)
 
@@ -11,7 +11,7 @@ def one_iteration(state):
     results['puzzle'] = state
 
     #puzzle = createRandomEightPuzzle(moves = 100)
-    print('Puzzle:')
+    print(f'Puzzle {index}:')
     print(puzzle)
     print("solving...")
 
@@ -53,17 +53,16 @@ def one_iteration(state):
  
 
 
-def main():
+if __name__ == '__main__':
     field_names = ['puzzle', 'h1-tree_depth', 'h1-explored_nodes', 'h1-fringe_max','h2-tree_depth', 'h2-explored_nodes', 'h2-fringe_max',
                     'h3-tree_depth', 'h3-explored_nodes', 'h3-fringe_max', 'h4-tree_depth', 'h4-explored_nodes', 'h4-fringe_max']
     results = []
     states = read_from_csv()
-    for state in states:
-        result = one_iteration(state)
+    for i, state in enumerate(states):
+        result = one_iteration(state, index=i)
         results.append(result)
     write_results(field_names, results)
     
 
 
-main()
 

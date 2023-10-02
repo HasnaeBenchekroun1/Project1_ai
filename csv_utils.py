@@ -21,6 +21,20 @@ def read_from_csv(filename='scenarios.csv'):
 
     return states 
 
+
+def read_results_csv(filename='results.csv'):
+    results = []
+    with open(filename, mode='r') as file:
+        csvfile = csv.DictReader(file)
+        for line in csvfile:
+            if len(line) != 0:
+                #print(line)
+                results.append(line)
+
+    return results
+
+
+
 def write_results(field_names, data, filename='results.csv'):
     with open(filename, mode='w') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=field_names)
@@ -34,11 +48,11 @@ def generate_random_state(movenumber=100):
     return puzzle
 
 
-def generate_random_states():
+def generate_random_states(number_states=5, move_number=25, filename='scenarios.csv'):
     all_states = []
 
-    for i in range(5):
-        state = generate_random_state(movenumber=25)
+    for i in range(number_states):
+        state = generate_random_state(movenumber=move_number)
         state_list =[]
         for i in range(3):
             for j in range(3):
@@ -46,10 +60,10 @@ def generate_random_states():
         print(state_list)
         all_states.append(state_list)
 
-    write_to_csv(all_states)
+    write_to_csv(all_states, filename)
 
 if __name__ == '__main__':
-    generate_random_states()
+    generate_random_states(100, 30, 'scenarios3.csv')
 
 
 

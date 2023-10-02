@@ -186,18 +186,15 @@ class EightPuzzleState:
         return self.__getAsciiString()
 
 # TODO: Implement The methods in this class
+
+    #/*=====Start Change Task 1=====*/
     def h1(self, state, problem=None):
-        """
-        A heuristic function estimates the cost from the current state to the nearest
-        goal in the provided SearchProblem. This heuristic is h1, which is the number
-        of misplaced tiles.
-        """
         misplaced_tiles = 0
         goal_state = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 
         for row in range(3):
             for col in range(3):
-                if state.cells[row][col] != goal_state[row * 3 + col]:
+                if state.cells[row][col] != 0 and state.cells[row][col] != goal_state[row * 3 + col]:
                     misplaced_tiles += 1
         #print(f"h1 heuristic value (Number of misplaced tiles): {misplaced_tiles}")
 
@@ -246,6 +243,8 @@ class EightPuzzleState:
                 if (x != 0):
                     result+=1
         return result
+    # /*=====End Change Task 1=====*/
+
 
 
 

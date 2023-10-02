@@ -84,6 +84,9 @@ def depthFirstSearch(problem):
     startNode = (startState, [])
 
     frontier.push(startNode)
+    #/*=====Start Change Task 3=====*/
+    depth_tree = 0
+    #/*=====End Change Task 3=====*/
 
     while not frontier.isEmpty():
         #begin exploring last (most-recently-pushed) node on frontier
@@ -94,7 +97,7 @@ def depthFirstSearch(problem):
             exploredNodes.append(currentState)
 
             if problem.isGoalState(currentState):
-                return actions
+                return actions, (depth_tree , len(exploredNodes), frontier.max_fringe)
             else:
                 #get list of possible successor nodes in
                 #form (successor, action, stepCost)
@@ -106,7 +109,15 @@ def depthFirstSearch(problem):
                     newNode = (succState, newAction)
                     frontier.push(newNode)
 
-    return actions
+                    #/*=====Start Change Task 3=====*/
+                    if depth_tree < len(newAction):
+                        depth_tree = len(newAction)
+                    #/*=====End Change Task 3=====*/
+
+    return actions, (depth_tree , len(exploredNodes), frontier.max_fringe)
+
+
+
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
@@ -122,6 +133,10 @@ def breadthFirstSearch(problem):
 
     frontier.push(startNode)
 
+    #/*=====Start Change Task 3=====*/
+    depth_tree = 0
+    #/*=====End Change Task 3=====*/
+
     while not frontier.isEmpty():
         #begin exploring first (earliest-pushed) node on frontier
         currentState, actions, currentCost = frontier.pop()
@@ -131,7 +146,9 @@ def breadthFirstSearch(problem):
             exploredNodes.append(currentState)
 
             if problem.isGoalState(currentState):
-                return actions
+                #/*=====Start Change Task 3=====*/
+                return actions, (depth_tree , len(exploredNodes), frontier.max_fringe)
+                #/*=====End Change Task 3=====*/
             else:
                 #list of (successor, action, stepCost)
                 successors = problem.getSuccessors(currentState)
@@ -143,7 +160,15 @@ def breadthFirstSearch(problem):
 
                     frontier.push(newNode)
 
-    return actions
+                    #/*=====Start Change Task 3=====*/
+                    if depth_tree < len(newAction):
+                        depth_tree = len(newAction)
+                    #/*=====End Change Task 3=====*/
+
+    return actions, (depth_tree , len(exploredNodes), frontier.max_fringe)
+
+
+
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
@@ -159,6 +184,10 @@ def uniformCostSearch(problem):
 
     frontier.push(startNode, 0)
 
+    #/*=====Start Change Task 3=====*/
+    depth_tree = 0
+    #/*=====End Change Task 3=====*/
+
     while not frontier.isEmpty():
         #begin exploring first (lowest-cost) node on frontier
         currentState, actions, currentCost = frontier.pop()
@@ -168,7 +197,9 @@ def uniformCostSearch(problem):
             exploredNodes[currentState] = currentCost
 
             if problem.isGoalState(currentState):
-                return actions
+                #/*=====Start Change Task 3=====*/
+                return actions, (depth_tree , len(exploredNodes), frontier.max_fringe)
+                #/*=====End Change Task 3=====*/
             else:
                 #list of (successor, action, stepCost)
                 successors = problem.getSuccessors(currentState)
@@ -180,72 +211,19 @@ def uniformCostSearch(problem):
 
                     frontier.update(newNode, newCost)
 
-    return actions
+                    #/*=====Start Change Task 3=====*/
+                    if depth_tree < len(newAction):
+                        depth_tree = len(newAction)
+                    #/*=====End Change Task 3=====*/
+                    
 
-def h1(state, problem=None):
-    """
-    A heuristic function estimates the cost from the current state to the nearest
-    goal in the provided SearchProblem. This heuristic is h1, which is the number
-    of misplaced tiles.
-    """
-    misplaced_tiles = 0
-    goal_state = [0, 1, 2, 3, 4, 5, 6, 7, 8]
-
-    for row in range(3):
-        for col in range(3):
-            if state.cells[row][col] != goal_state[row * 3 + col]:
-                misplaced_tiles += 1
-    #print(f"h1 heuristic value (Number of misplaced tiles): {misplaced_tiles}")
-
-    return misplaced_tiles
+    return actions, (depth_tree , len(exploredNodes), frontier.max_fringe)
 
 
-def h2(state, problem=None):
-    result = 0
-    state_list =[]
-    for i in range(3):
-        for j in range(3):
-            state_list.append(state.cells[i][j])
-    for i in range(9):
-        if state_list[i]!=0:
-            y = state_list[i]//3 - i//3
-            x = state_list[i]%3 - i%3
-            result += math.sqrt(x**2 + y**2)
-    return result
+def h0(state, problem):
+    return 0
 
-def h3(state, problem=None):
-    result = 0
-    state_list =[]
-    for i in range(3):
-        for j in range(3):
-            state_list.append(state.cells[i][j])
-    for i in range(9):
-        if state_list[i]!=0:
-            y = abs(state_list[i]//3 - i//3)
-            x = abs(state_list[i]%3 - i%3)
-            result += (x + y)
-    return result
-
-
-def h4(state, problem=None):
-    result = 0
-    state_list =[]
-    for i in range(3):
-        for j in range(3):
-            state_list.append(state.cells[i][j])
-    for i in range(9):
-        if state_list[i]!=0:
-            y = abs(state_list[i]//3 - i//3)
-            if (y != 0):
-                result+=1
-            x = abs(state_list[i]%3 - i%3)
-            if (x != 0):
-                result+=1
-    return result
-
-
-
-def aStarSearch(problem, heuristic=h3):
+def aStarSearch(problem, heuristic=h0):
     """Search the node that has the lowest combined cost and heuristic first."""
 
     #to be explored (FIFO): takes in item, cost+heuristic
@@ -259,7 +237,9 @@ def aStarSearch(problem, heuristic=h3):
     frontier.push(startNode, 0)
 
     #adding counter of max frontier
+    #/*=====Start Change Task 2=====*/
     depth_tree = 0
+    #/*=====End Change Task 2=====*/
     while not frontier.isEmpty():
 
         #begin exploring first (lowest-combined (cost+heuristic) ) node on frontier
@@ -270,10 +250,13 @@ def aStarSearch(problem, heuristic=h3):
         exploredNodes.append((currentState, currentCost))
 
         if problem.isGoalState(currentState):
-            print("depth of tree:", depth_tree)
-            print("expanded nodes:", len(exploredNodes))
-            print("max fringe size:", frontier.max_fringe)
+            #print("depth of tree:", depth_tree)
+            #print("expanded nodes:", len(exploredNodes))
+            #print("max fringe size:", frontier.max_fringe)
+
+            #/*=====Start Change Task 2=====*/
             return actions, (depth_tree, len(exploredNodes), frontier.max_fringe)
+            #/*=====End Change Task 2=====*/
 
         else:
             #list of (successor, action, stepCost)
@@ -303,14 +286,19 @@ def aStarSearch(problem, heuristic=h3):
                 #print(heuristic(succState, problem))
                 #print(newCost+heuristic(succState, problem))
                 #print(newAction)
+
+                #/*=====Start Change Task 2=====*/
                 if depth_tree < len(newAction):
                     depth_tree = len(newAction)
-                #print("-------------")
+                #/*=====End Change Task 2=====*/
 
-    print("depth of tree:", depth_tree)
-    print("expanded nodes:", len(exploredNodes))
-    print("max fringe size:", frontier.count)
+    #print("depth of tree:", depth_tree)
+    #print("expanded nodes:", len(exploredNodes))
+    #print("max fringe size:", frontier.count)
+
+    #/*=====Start Change Task 2=====*/
     return actions, (depth_tree, len(exploredNodes), frontier.max_fringe)
+    #/*=====End Change Task 2=====*/
 
 
 # Abbreviations

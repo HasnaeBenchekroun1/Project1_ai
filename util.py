@@ -135,33 +135,60 @@ class Stack:
     "A container with a last-in-first-out (LIFO) queuing policy."
     def __init__(self):
         self.list = []
+        #/*=====Start Change Task i=====*/
+        self.max_fringe=0
+        self.fringe_size = 0
+        #/*=====End Change Task i=====*/
 
     def push(self,item):
         "Push 'item' onto the stack"
         self.list.append(item)
+        #/*=====Start Change Task i=====*/
+        self.fringe_size+=1
+        if(self.fringe_size>self.max_fringe):
+            self.max_fringe = self.fringe_size
+        #/*=====End Change Task i=====*/
 
     def pop(self):
         "Pop the most recently pushed item from the stack"
+        #/*=====Start Change Task i=====*/
+        self.fringe_size-=1
+        #/*=====End Change Task i=====*/
         return self.list.pop()
 
     def isEmpty(self):
         "Returns true if the stack is empty"
         return len(self.list) == 0
 
+
+
 class Queue:
     "A container with a first-in-first-out (FIFO) queuing policy."
     def __init__(self):
         self.list = []
+        #/*=====Start Change Task i=====*/
+        self.max_fringe=0
+        self.fringe_size = 0
+        #/*=====End Change Task i=====*/
+
 
     def push(self,item):
         "Enqueue the 'item' into the queue"
         self.list.insert(0,item)
+        #/*=====Start Change Task i=====*/
+        self.fringe_size+=1
+        if(self.fringe_size>self.max_fringe):
+            self.max_fringe = self.fringe_size
+        #/*=====End Change Task i=====*/
 
     def pop(self):
         """
           Dequeue the earliest enqueued item still in the queue. This
           operation removes the item from the queue.
         """
+        #/*=====Start Change Task i=====*/
+        self.fringe_size-=1
+        #/*=====End Change Task i=====*/
         return self.list.pop()
 
     def isEmpty(self):
@@ -178,17 +205,26 @@ class PriorityQueue:
     def  __init__(self):
         self.heap = []
         self.count = 0
+        #/*=====Start Change Task 2=====*/
+        self.fringe_size = 0
         self.max_fringe = 0
+        #/*=====End Change Task 2=====*/
 
     def push(self, item, priority):
         entry = (priority, self.count, item)
         heapq.heappush(self.heap, entry)
         self.count += 1
-        self.max_fringe+=1
+        #/*=====Start Change Task 2=====*/
+        self.fringe_size+=1
+        if self.max_fringe < self.fringe_size:
+            self.max_fringe = self.fringe_size
+        #/*=====End Change Task 2=====*/
 
     def pop(self):
         (_, _, item) = heapq.heappop(self.heap)
+        #/*=====Start Change Task 2=====*/
         self.max_fringe-=1
+        #/*=====End Change Task 2=====*/
         return item
 
     def isEmpty(self):
